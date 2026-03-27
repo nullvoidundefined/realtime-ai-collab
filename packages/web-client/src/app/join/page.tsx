@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
@@ -10,7 +10,7 @@ interface JoinResponse {
     document: Document;
 }
 
-export default function JoinPage() {
+function JoinContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
@@ -41,5 +41,13 @@ export default function JoinPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
             <p>Joining document...</p>
         </div>
+    );
+}
+
+export default function JoinPage() {
+    return (
+        <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><p>Loading...</p></div>}>
+            <JoinContent />
+        </Suspense>
     );
 }
