@@ -1,0 +1,26 @@
+.overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cursor {
+    position: absolute;
+    width: 2px;
+    height: 1.25rem;
+    border-left: 2px solid;
+    transform: translateX(-1px);
+}
+
+.cursorLabel {
+    position: absolute;
+    top: -1.5rem;
+    left: 0;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+}

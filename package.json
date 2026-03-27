@@ -1,0 +1,8 @@
+{
+    "name": "realtime-ai-collab",
+    "private": true,
+    "scripts": {
+        "dev:server": "pnpm --filter server dev",
+        "dev:web": "pnpm --filter web-client dev"
+    }
+}
