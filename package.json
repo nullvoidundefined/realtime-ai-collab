@@ -3,6 +3,8 @@
     "private": true,
     "scripts": {
         "dev:server": "pnpm --filter server dev",
-        "dev:web": "pnpm --filter web-client dev"
+        "dev:web": "pnpm --filter web-client dev",
+        "build": "pnpm --filter server build",
+        "start": "node packages/server/dist/index.js"
     }
 }
