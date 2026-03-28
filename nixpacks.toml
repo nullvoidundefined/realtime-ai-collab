@@ -2,4 +2,4 @@
 cmds = ["pnpm --filter server build"]
 
 [start]
-cmd = "node packages/server/dist/index.js"
+cmd = "pnpm --filter server migrate && node packages/server/dist/index.js"
