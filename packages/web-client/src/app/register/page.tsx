@@ -1,97 +1,104 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useMutation } from '@tanstack/react-query';
+
 import { apiFetch } from '@/lib/api';
 import type { User } from '@/types';
+import { useMutation } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import styles from './page.module.scss';
 
 interface RegisterResponse {
-    user: User;
+  user: User;
 }
 
 export default function RegisterPage() {
-    const router = useRouter();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-    const mutation = useMutation({
-        mutationFn: () =>
-            apiFetch<RegisterResponse>('/auth/register', {
-                method: 'POST',
-                body: JSON.stringify({ name, email, password }),
-            }),
-        onSuccess: () => {
-            router.push('/dashboard');
-        },
-        onError: (err: Error) => {
-            setError(err.message);
-        },
-    });
+  const mutation = useMutation({
+    mutationFn: () =>
+      apiFetch<RegisterResponse>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ name, email, password }),
+      }),
+    onSuccess: () => {
+      router.push('/dashboard');
+    },
+    onError: (err: Error) => {
+      setError(err.message);
+    },
+  });
 
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        setError('');
-        mutation.mutate();
-    }
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    mutation.mutate();
+  }
 
-    return (
-        <main className={styles.container}>
-            <div className={styles.card}>
-                <h1 className={styles.title}>Create Account</h1>
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    {error && <p className={styles.error}>{error}</p>}
-                    <div className={styles.field}>
-                        <label htmlFor="name" className={styles.label}>Name</label>
-                        <input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className={styles.input}
-                            required
-                        />
-                    </div>
-                    <div className={styles.field}>
-                        <label htmlFor="email" className={styles.label}>Email</label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className={styles.input}
-                            required
-                        />
-                    </div>
-                    <div className={styles.field}>
-                        <label htmlFor="password" className={styles.label}>Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={styles.input}
-                            required
-                            minLength={8}
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className={styles.submitButton}
-                        disabled={mutation.isPending}
-                    >
-                        {mutation.isPending ? 'Creating account...' : 'Create Account'}
-                    </button>
-                </form>
-                <p className={styles.link}>
-                    Already have an account?{' '}
-                    <Link href="/login">Sign in</Link>
-                </p>
-            </div>
-        </main>
-    );
+  return (
+    <main className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Create Account</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {error && <p className={styles.error}>{error}</p>}
+          <div className={styles.field}>
+            <label htmlFor='name' className={styles.label}>
+              Name
+            </label>
+            <input
+              id='name'
+              type='text'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={styles.input}
+              required
+            />
+          </div>
+          <div className={styles.field}>
+            <label htmlFor='email' className={styles.label}>
+              Email
+            </label>
+            <input
+              id='email'
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={styles.input}
+              required
+            />
+          </div>
+          <div className={styles.field}>
+            <label htmlFor='password' className={styles.label}>
+              Password
+            </label>
+            <input
+              id='password'
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
+              required
+              minLength={8}
+            />
+          </div>
+          <button
+            type='submit'
+            className={styles.submitButton}
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? 'Creating account...' : 'Create Account'}
+          </button>
+        </form>
+        <p className={styles.link}>
+          Already have an account? <Link href='/login'>Sign in</Link>
+        </p>
+      </div>
+    </main>
+  );
 }

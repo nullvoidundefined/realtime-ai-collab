@@ -7,7 +7,7 @@ export const shorthands = undefined;
  * @param pgm {import("node-pg-migrate").MigrationBuilder}
  */
 export const up = (pgm) => {
-    pgm.sql(`
+  pgm.sql(`
         CREATE TABLE IF NOT EXISTS sessions (
             sid VARCHAR NOT NULL COLLATE "default",
             sess JSON NOT NULL,
@@ -22,5 +22,5 @@ export const up = (pgm) => {
  * @param pgm {import("node-pg-migrate").MigrationBuilder}
  */
 export const down = (pgm) => {
-    pgm.dropTable("sessions");
+  pgm.dropTable('sessions');
 };

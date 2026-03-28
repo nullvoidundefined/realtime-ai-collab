@@ -1,32 +1,51 @@
-import { Pool, type PoolClient, type QueryResult, type QueryResultRow } from "pg";
+import {
+  Pool,
+  type PoolClient,
+  type QueryResult,
+  type QueryResultRow,
+} from 'pg';
 
-function isProduction() { return process.env.NODE_ENV === "production"; }
-
-export const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 10,
-    idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 5_000,
-    ssl: isProduction()
-        ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false" }
-        : { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" },
-});
-
-export async function query<T extends QueryResultRow>(text: string, values?: unknown[], client?: PoolClient): Promise<QueryResult<T>> {
-    return (client ?? pool).query<T>(text, values);
+function isProduction() {
+  return process.env.NODE_ENV === 'production';
 }
 
-export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
-    const client = await pool.connect();
-    try {
-        await client.query("BEGIN");
-        const r = await fn(client);
-        await client.query("COMMIT");
-        return r;
-    } catch (err) {
-        await client.query("ROLLBACK");
-        throw err;
-    } finally {
-        client.release();
-    }
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 10,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 5_000,
+  ssl: isProduction()
+    ? {
+        rejectUnauthorized:
+          process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
+      }
+    : {
+        rejectUnauthorized:
+          process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === 'true',
+      },
+});
+
+export async function query<T extends QueryResultRow>(
+  text: string,
+  values?: unknown[],
+  client?: PoolClient,
+): Promise<QueryResult<T>> {
+  return (client ?? pool).query<T>(text, values);
+}
+
+export async function withTransaction<T>(
+  fn: (client: PoolClient) => Promise<T>,
+): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const r = await fn(client);
+    await client.query('COMMIT');
+    return r;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
 }

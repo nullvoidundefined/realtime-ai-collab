@@ -1,7 +1,12 @@
-import type { Request, Response, NextFunction } from "express";
-import { logger } from "app/utils/logs/logger.js";
+import { logger } from 'app/utils/logs/logger.js';
+import type { NextFunction, Request, Response } from 'express';
 
-export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction): void {
-    logger.error({ err, path: req.path }, "Unhandled error");
-    res.status(500).json({ error: "Internal server error" });
+export function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  _next: NextFunction,
+): void {
+  logger.error({ err, path: req.path }, 'Unhandled error');
+  res.status(500).json({ error: 'Internal server error' });
 }

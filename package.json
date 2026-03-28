@@ -5,6 +5,10 @@
         "dev:server": "pnpm --filter server dev",
         "dev:web": "pnpm --filter web-client dev",
         "build": "pnpm --filter server build",
-        "start": "node packages/server/dist/index.js"
+        "start": "node packages/server/dist/index.js",
+        "lint": "pnpm -r run lint",
+        "lint:fix": "pnpm -r run lint:fix",
+        "format": "pnpm -r run format",
+        "format:check": "pnpm -r run format:check"
     }
 }
