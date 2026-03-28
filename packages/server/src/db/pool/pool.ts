@@ -7,7 +7,9 @@ export const pool = new Pool({
     max: 10,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 5_000,
-    ssl: isProduction() ? { rejectUnauthorized: false } : false,
+    ssl: isProduction()
+        ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false" }
+        : { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" },
 });
 
 export async function query<T extends QueryResultRow>(text: string, values?: unknown[], client?: PoolClient): Promise<QueryResult<T>> {
