@@ -1,4 +1,4 @@
-import { query } from "../../db/pool/pool.js";
+import { query } from "app/db/pool/pool.js";
 
 export interface SuggestionRow {
     id: string;

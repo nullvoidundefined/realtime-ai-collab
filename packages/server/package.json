@@ -4,7 +4,7 @@
     "type": "module",
     "scripts": {
         "dev": "tsx watch src/index.ts",
-        "build": "tsup src/index.ts --format esm",
+        "build": "tsc && tsc-alias",
         "start": "node dist/index.js",
         "migrate": "node-pg-migrate up -m migrations"
     },
@@ -12,10 +12,12 @@
         "@anthropic-ai/sdk": "^0.37.0",
         "@google-cloud/secret-manager": "^6.1.1",
         "bcryptjs": "^2",
+        "connect-pg-simple": "^10",
         "cookie-parser": "^1",
         "cors": "^2",
         "dotenv": "^16",
         "express": "^5",
+        "express-rate-limit": "^7",
         "express-session": "^1",
         "helmet": "^8",
         "ioredis": "^5",
@@ -30,6 +32,7 @@
     },
     "devDependencies": {
         "@types/bcryptjs": "^2",
+        "@types/connect-pg-simple": "^7",
         "@types/cookie-parser": "^1",
         "@types/cors": "^2",
         "@types/express": "^5",
@@ -37,7 +40,7 @@
         "@types/node": "^22",
         "@types/pg": "^8",
         "@types/uuid": "^10",
-        "tsup": "^8",
+        "tsc-alias": "^1",
         "tsx": "^4",
         "typescript": "^5"
     }

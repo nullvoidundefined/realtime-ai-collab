@@ -1,8 +1,8 @@
 import type { Socket, Server } from "socket.io";
-import { redis } from "../../config/redis.js";
-import { createSuggestion, updateSuggestionStatus } from "../../repositories/suggestions/suggestions.js";
-import { updateDocument, createVersion } from "../../repositories/documents/documents.js";
-import { streamSuggestion } from "../../services/suggestion.service.js";
+import { redis } from "app/config/redis.js";
+import { createSuggestion, updateSuggestionStatus } from "app/repositories/suggestions/suggestions.js";
+import { updateDocument, createVersion } from "app/repositories/documents/documents.js";
+import { streamSuggestion } from "app/services/suggestion.service.js";
 
 const abortControllers = new Map<string, AbortController>();
 

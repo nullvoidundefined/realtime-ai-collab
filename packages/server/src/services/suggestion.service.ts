@@ -1,10 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { Server } from "socket.io";
-import { updateSuggestionStatus } from "../repositories/suggestions/suggestions.js";
-import { buildContinuePrompt } from "../prompts/continue.js";
-import { buildImprovePrompt } from "../prompts/improve.js";
-import { buildSummarizePrompt } from "../prompts/summarize.js";
-import { buildExpandPrompt } from "../prompts/expand.js";
+import { updateSuggestionStatus } from "app/repositories/suggestions/suggestions.js";
+import { buildContinuePrompt } from "app/prompts/continue.js";
+import { buildImprovePrompt } from "app/prompts/improve.js";
+import { buildSummarizePrompt } from "app/prompts/summarize.js";
+import { buildExpandPrompt } from "app/prompts/expand.js";
 
 const client = new Anthropic();
 

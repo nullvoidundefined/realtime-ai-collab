@@ -1,9 +1,9 @@
 import { Server, type Socket } from "socket.io";
 import type { Server as HttpServer } from "node:http";
-import { redis } from "../config/redis.js";
-import { setupEditHandler } from "./handlers/edit.js";
-import { setupCursorHandler } from "./handlers/cursor.js";
-import { setupAiHandlers } from "./handlers/ai.js";
+import { redis } from "app/config/redis.js";
+import { setupEditHandler } from "app/socket/handlers/edit.js";
+import { setupCursorHandler } from "app/socket/handlers/cursor.js";
+import { setupAiHandlers } from "app/socket/handlers/ai.js";
 
 const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
 
@@ -45,7 +45,7 @@ export function initSocket(httpServer: HttpServer): Server {
 
             // Send presence snapshot to the joining user
             const members = await redis.smembers(`presence:${documentId}`);
-            socket.emit("presence", { users: members.map((uid) => ({ userId: uid, color: getUserColor(uid) })) });
+            socket.emit("presence", { users: members.map((uid: string) => ({ userId: uid, color: getUserColor(uid) })) });
 
             // Store document association for disconnect
             (socket as Socket & { userId: string; documentId?: string }).documentId = documentId;

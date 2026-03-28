@@ -1,5 +1,5 @@
-import { query } from "../../db/pool/pool.js";
-import type { Document } from "../../schemas/document.js";
+import { query } from "app/db/pool/pool.js";
+import type { Document } from "app/schemas/document.js";
 
 export interface DocumentRow extends Document {}
 

@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { registerSchema, loginSchema } from "../../schemas/auth.js";
-import { getUserByEmail, getUserById, createUser } from "../../repositories/auth/auth.js";
-import { hashPassword, verifyPassword } from "../../services/auth.service.js";
+import { registerSchema, loginSchema } from "app/schemas/auth.js";
+import { getUserByEmail, getUserById, createUser } from "app/repositories/auth/auth.js";
+import { hashPassword, verifyPassword } from "app/services/auth.service.js";
 
 export async function register(req: Request, res: Response): Promise<void> {
     const parsed = registerSchema.safeParse(req.body);

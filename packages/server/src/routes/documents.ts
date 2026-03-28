@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../middleware/requireAuth/requireAuth.js";
+import { requireAuth } from "app/middleware/requireAuth/requireAuth.js";
 import {
     listDocuments,
     createDocumentHandler,
@@ -10,7 +10,7 @@ import {
     joinDocument,
     getVersionsHandler,
     getSuggestionsHandler,
-} from "../handlers/documents/documents.js";
+} from "app/handlers/documents/documents.js";
 
 const router = Router();
 

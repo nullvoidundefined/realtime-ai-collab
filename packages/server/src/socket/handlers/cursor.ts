@@ -1,5 +1,5 @@
 import type { Socket, Server } from "socket.io";
-import { redis } from "../../config/redis.js";
+import { redis } from "app/config/redis.js";
 
 export function setupCursorHandler(
     socket: Socket,

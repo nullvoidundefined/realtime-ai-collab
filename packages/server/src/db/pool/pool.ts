@@ -1,9 +1,8 @@
-import "dotenv/config";
 import { Pool, type PoolClient, type QueryResult, type QueryResultRow } from "pg";
 
 function isProduction() { return process.env.NODE_ENV === "production"; }
 
-const pool = new Pool({
+export const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     max: 10,
     idleTimeoutMillis: 30_000,
