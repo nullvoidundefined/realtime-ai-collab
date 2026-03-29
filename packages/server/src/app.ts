@@ -2,7 +2,10 @@ import { corsConfig } from 'app/config/corsConfig.js';
 import { getPort, isProduction } from 'app/config/env.js';
 import { SESSION_COOKIE_NAME, SESSION_TTL_MS } from 'app/constants/session.js';
 import { pool, query } from 'app/db/pool/pool.js';
-import { csrfGuard } from 'app/middleware/csrfGuard/csrfGuard.js';
+import {
+  doubleCsrfProtection,
+  generateCsrfToken,
+} from 'app/middleware/csrfGuard/csrfGuard.js';
 import { errorHandler } from 'app/middleware/errorHandler/errorHandler.js';
 import { notFoundHandler } from 'app/middleware/notFoundHandler/notFoundHandler.js';
 import { rateLimiter } from 'app/middleware/rateLimiter/rateLimiter.js';
@@ -39,7 +42,14 @@ app.use(requestLogger);
 app.use(rateLimiter);
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
-app.use(csrfGuard);
+
+/* --- CSRF token endpoint (must precede the protection middleware) --- */
+app.get('/api/csrf-token', (req, res) => {
+  const token = generateCsrfToken(req, res);
+  res.json({ token });
+});
+
+app.use(doubleCsrfProtection);
 app.use(
   session({
     store: new PgStore({ pool, tableName: 'sessions' }),

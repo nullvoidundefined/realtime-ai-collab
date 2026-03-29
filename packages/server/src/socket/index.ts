@@ -1,4 +1,5 @@
 import { redis } from 'app/config/redis.js';
+import { validateRequest } from 'app/middleware/csrfGuard/csrfGuard.js';
 import { setupAiHandlers } from 'app/socket/handlers/ai.js';
 import { setupCursorHandler } from 'app/socket/handlers/cursor.js';
 import { setupEditHandler } from 'app/socket/handlers/edit.js';
@@ -36,6 +37,32 @@ export function initSocket(httpServer: HttpServer): Server {
     if (!userId) {
       return next(new Error('Authentication required'));
     }
+
+    /* Validate CSRF token passed as auth.csrfToken during handshake.
+       We build a minimal request-like object so validateRequest can
+       check the double-submit cookie + header/body token pair. */
+    const csrfToken = socket.handshake.auth.csrfToken as string | undefined;
+    const cookies = socket.handshake.headers.cookie ?? '';
+    const fakeReq = {
+      headers: {
+        cookie: cookies,
+        'x-csrf-token': csrfToken ?? '',
+      },
+      cookies: Object.fromEntries(
+        cookies
+          .split(';')
+          .filter(Boolean)
+          .map((c: string) => {
+            const [k, ...v] = c.trim().split('=');
+            return [k, v.join('=')];
+          }),
+      ),
+    } as any;
+
+    if (!validateRequest(fakeReq)) {
+      return next(new Error('Invalid CSRF token'));
+    }
+
     (socket as Socket & { userId: string }).userId = userId;
     next();
   });
