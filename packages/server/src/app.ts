@@ -1,5 +1,6 @@
 import { corsConfig } from 'app/config/corsConfig.js';
 import { getPort, isProduction } from 'app/config/env.js';
+import { redis } from 'app/config/redis.js';
 import { SESSION_COOKIE_NAME, SESSION_TTL_MS } from 'app/constants/session.js';
 import { pool, query } from 'app/db/pool/pool.js';
 import {
@@ -43,6 +44,19 @@ app.use(rateLimiter);
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
 
+/* --- Request timeout (exempt Socket.IO and SSE streaming) --- */
+app.use((req, res, next) => {
+  if (
+    req.path.startsWith('/socket.io') ||
+    req.headers.accept === 'text/event-stream'
+  ) {
+    return next();
+  }
+  req.setTimeout(30_000);
+  res.setTimeout(30_000);
+  next();
+});
+
 /* --- CSRF token endpoint (must precede the protection middleware) --- */
 app.get('/api/csrf-token', (req, res) => {
   const token = generateCsrfToken(req, res);
@@ -85,7 +99,7 @@ app.use('/documents', documentsRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-initSocket(httpServer);
+const io = initSocket(httpServer);
 
 export { httpServer };
 
@@ -112,9 +126,23 @@ export function startServer(): void {
 
   async function shutdown(signal: string) {
     logger.info({ signal }, 'Shutting down gracefully');
+
+    // 1. Close HTTP server (stop accepting new connections)
     await new Promise<void>((resolve) => httpServer.close(() => resolve()));
     logger.info('HTTP server closed');
+
+    // 2. Close Socket.IO server (disconnect all sockets)
+    await io.close();
+    logger.info('Socket.IO server closed');
+
+    // 3. Drain database pool
     await pool.end();
+    logger.info('Database pool drained');
+
+    // 4. Quit Redis
+    await redis.quit();
+    logger.info('Redis connection closed');
+
     process.exit(0);
   }
 
