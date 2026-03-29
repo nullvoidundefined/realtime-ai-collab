@@ -128,6 +128,9 @@ importers:
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
+      socket.io-client:
+        specifier: ^4.8.3
+        version: 4.8.3
       supertest:
         specifier: ^7.2.2
         version: 7.2.2

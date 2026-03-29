@@ -14,6 +14,7 @@ import {
   createDocumentSchema,
   updateDocumentSchema,
 } from 'app/schemas/document.js';
+import { ApiError } from 'app/utils/ApiError.js';
 import type { Request, Response } from 'express';
 import { randomBytes } from 'node:crypto';
 
@@ -32,10 +33,7 @@ export async function createDocumentHandler(
 ): Promise<void> {
   const parsed = createDocumentSchema.safeParse(req.body);
   if (!parsed.success) {
-    res
-      .status(400)
-      .json({ error: 'Validation failed', details: parsed.error.issues });
-    return;
+    throw ApiError.badRequest('Validation failed', parsed.error.issues);
   }
 
   const userId = req.session.userId!;
@@ -46,8 +44,7 @@ export async function createDocumentHandler(
 export async function getDocument(req: Request, res: Response): Promise<void> {
   const doc = await getDocumentById(req.params.id as string);
   if (!doc) {
-    res.status(404).json({ error: 'Document not found' });
-    return;
+    throw ApiError.notFound('Document not found');
   }
   res.json({ document: doc });
 }
@@ -58,16 +55,12 @@ export async function updateDocumentHandler(
 ): Promise<void> {
   const parsed = updateDocumentSchema.safeParse(req.body);
   if (!parsed.success) {
-    res
-      .status(400)
-      .json({ error: 'Validation failed', details: parsed.error.issues });
-    return;
+    throw ApiError.badRequest('Validation failed', parsed.error.issues);
   }
 
   const doc = await updateDocument(req.params.id as string, parsed.data);
   if (!doc) {
-    res.status(404).json({ error: 'Document not found' });
-    return;
+    throw ApiError.notFound('Document not found');
   }
   res.json({ document: doc });
 }
@@ -86,8 +79,7 @@ export async function shareDocument(
 ): Promise<void> {
   const doc = await getDocumentById(req.params.id as string);
   if (!doc) {
-    res.status(404).json({ error: 'Document not found' });
-    return;
+    throw ApiError.notFound('Document not found');
   }
 
   const token = doc.share_token ?? randomBytes(32).toString('hex');
@@ -102,14 +94,12 @@ export async function shareDocument(
 export async function joinDocument(req: Request, res: Response): Promise<void> {
   const { shareToken } = req.body;
   if (!shareToken) {
-    res.status(400).json({ error: 'shareToken is required' });
-    return;
+    throw ApiError.badRequest('shareToken is required');
   }
 
   const doc = await getDocumentByShareToken(shareToken);
   if (!doc) {
-    res.status(404).json({ error: 'Invalid share token' });
-    return;
+    throw ApiError.notFound('Invalid share token');
   }
 
   const userId = req.session.userId!;
