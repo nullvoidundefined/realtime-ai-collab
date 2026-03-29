@@ -27,6 +27,7 @@ import {
   getVersions,
 } from 'app/repositories/documents/documents.js';
 import { getDocumentSuggestions } from 'app/repositories/suggestions/suggestions.js';
+import { ApiError } from 'app/utils/ApiError.js';
 import {
   createDocumentHandler,
   deleteDocumentHandler,
@@ -105,13 +106,15 @@ describe('createDocumentHandler', () => {
     expect(createDocument).toHaveBeenCalledWith('user-1', 'Untitled');
   });
 
-  it('returns 400 for empty string title', async () => {
+  it('throws VALIDATION_ERROR for empty string title', async () => {
     const req = createMockReq({ body: { title: '' } });
     const res = createMockRes();
 
-    await createDocumentHandler(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
+    await expect(createDocumentHandler(req, res)).rejects.toThrow(ApiError);
+    await expect(createDocumentHandler(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
   });
 });
 
@@ -130,15 +133,17 @@ describe('getDocument', () => {
     expect(res.json).toHaveBeenCalledWith({ document: doc });
   });
 
-  it('returns 404 when document not found', async () => {
+  it('throws NOT_FOUND when document not found', async () => {
     (getDocumentById as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const req = createMockReq({ params: { id: 'missing' } });
     const res = createMockRes();
 
-    await getDocument(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
+    await expect(getDocument(req, res)).rejects.toThrow(ApiError);
+    await expect(getDocument(req, res)).rejects.toMatchObject({
+      statusCode: 404,
+      code: 'NOT_FOUND',
+    });
   });
 });
 
@@ -161,7 +166,7 @@ describe('updateDocumentHandler', () => {
     expect(res.json).toHaveBeenCalledWith({ document: doc });
   });
 
-  it('returns 404 when document not found', async () => {
+  it('throws NOT_FOUND when document not found', async () => {
     (updateDocument as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const req = createMockReq({
@@ -170,21 +175,25 @@ describe('updateDocumentHandler', () => {
     });
     const res = createMockRes();
 
-    await updateDocumentHandler(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
+    await expect(updateDocumentHandler(req, res)).rejects.toThrow(ApiError);
+    await expect(updateDocumentHandler(req, res)).rejects.toMatchObject({
+      statusCode: 404,
+      code: 'NOT_FOUND',
+    });
   });
 
-  it('returns 400 for invalid body', async () => {
+  it('throws VALIDATION_ERROR for invalid body', async () => {
     const req = createMockReq({
       params: { id: 'doc-1' },
       body: { title: '' },
     });
     const res = createMockRes();
 
-    await updateDocumentHandler(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
+    await expect(updateDocumentHandler(req, res)).rejects.toThrow(ApiError);
+    await expect(updateDocumentHandler(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
   });
 });
 
@@ -207,15 +216,17 @@ describe('deleteDocumentHandler', () => {
 describe('shareDocument', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('returns 404 when document not found', async () => {
+  it('throws NOT_FOUND when document not found', async () => {
     (getDocumentById as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const req = createMockReq({ params: { id: 'missing' } });
     const res = createMockRes();
 
-    await shareDocument(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
+    await expect(shareDocument(req, res)).rejects.toThrow(ApiError);
+    await expect(shareDocument(req, res)).rejects.toMatchObject({
+      statusCode: 404,
+      code: 'NOT_FOUND',
+    });
   });
 
   it('returns existing share token when already set', async () => {
@@ -238,24 +249,28 @@ describe('shareDocument', () => {
 describe('joinDocument', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('returns 400 when shareToken missing', async () => {
+  it('throws VALIDATION_ERROR when shareToken missing', async () => {
     const req = createMockReq({ body: {} });
     const res = createMockRes();
 
-    await joinDocument(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
+    await expect(joinDocument(req, res)).rejects.toThrow(ApiError);
+    await expect(joinDocument(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
   });
 
-  it('returns 404 for invalid share token', async () => {
+  it('throws NOT_FOUND for invalid share token', async () => {
     (getDocumentByShareToken as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const req = createMockReq({ body: { shareToken: 'invalid' } });
     const res = createMockRes();
 
-    await joinDocument(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
+    await expect(joinDocument(req, res)).rejects.toThrow(ApiError);
+    await expect(joinDocument(req, res)).rejects.toMatchObject({
+      statusCode: 404,
+      code: 'NOT_FOUND',
+    });
   });
 
   it('adds collaborator and returns document on success', async () => {

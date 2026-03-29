@@ -20,6 +20,7 @@ import {
   hashPassword,
   verifyPassword,
 } from 'app/services/auth.service.js';
+import { ApiError } from 'app/utils/ApiError.js';
 import { login, logout, me, register } from './auth.js';
 
 function createMockReq(body: Record<string, unknown> = {}, session: Record<string, unknown> = {}) {
@@ -46,19 +47,18 @@ describe('auth handler: register', () => {
     vi.clearAllMocks();
   });
 
-  it('returns 400 for invalid body', async () => {
+  it('throws VALIDATION_ERROR for invalid body', async () => {
     const req = createMockReq({ email: 'bad' });
     const res = createMockRes();
 
-    await register(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({ error: 'Validation failed' }),
-    );
+    await expect(register(req, res)).rejects.toThrow(ApiError);
+    await expect(register(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
   });
 
-  it('returns 409 when email already exists', async () => {
+  it('throws CONFLICT when email already exists', async () => {
     (getUserByEmail as ReturnType<typeof vi.fn>).mockResolvedValue({
       id: 'existing',
       email: 'test@example.com',
@@ -71,10 +71,12 @@ describe('auth handler: register', () => {
     });
     const res = createMockRes();
 
-    await register(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(409);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Email already in use' });
+    await expect(register(req, res)).rejects.toThrow(ApiError);
+    await expect(register(req, res)).rejects.toMatchObject({
+      statusCode: 409,
+      code: 'CONFLICT',
+      message: 'Email already in use',
+    });
   });
 
   it('creates user and sets session on success', async () => {
@@ -110,16 +112,18 @@ describe('auth handler: login', () => {
     vi.clearAllMocks();
   });
 
-  it('returns 400 for invalid body', async () => {
+  it('throws VALIDATION_ERROR for invalid body', async () => {
     const req = createMockReq({ email: 'bad' });
     const res = createMockRes();
 
-    await login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
+    await expect(login(req, res)).rejects.toThrow(ApiError);
+    await expect(login(req, res)).rejects.toMatchObject({
+      statusCode: 400,
+      code: 'VALIDATION_ERROR',
+    });
   });
 
-  it('returns 401 when user not found', async () => {
+  it('throws UNAUTHORIZED when user not found', async () => {
     (getUserByEmail as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const req = createMockReq({
@@ -128,13 +132,15 @@ describe('auth handler: login', () => {
     });
     const res = createMockRes();
 
-    await login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Invalid credentials' });
+    await expect(login(req, res)).rejects.toThrow(ApiError);
+    await expect(login(req, res)).rejects.toMatchObject({
+      statusCode: 401,
+      code: 'UNAUTHORIZED',
+      message: 'Invalid credentials',
+    });
   });
 
-  it('returns 401 when password is wrong', async () => {
+  it('throws UNAUTHORIZED when password is wrong', async () => {
     (getUserByEmail as ReturnType<typeof vi.fn>).mockResolvedValue({
       id: 'user-1',
       email: 'test@example.com',
@@ -148,9 +154,11 @@ describe('auth handler: login', () => {
     });
     const res = createMockRes();
 
-    await login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
+    await expect(login(req, res)).rejects.toThrow(ApiError);
+    await expect(login(req, res)).rejects.toMatchObject({
+      statusCode: 401,
+      code: 'UNAUTHORIZED',
+    });
   });
 
   it('sets session and returns user on success', async () => {
@@ -199,6 +207,10 @@ describe('auth handler: logout', () => {
     await logout(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'INTERNAL_ERROR',
+      message: 'Logout failed',
+    });
   });
 });
 
@@ -207,24 +219,28 @@ describe('auth handler: me', () => {
     vi.clearAllMocks();
   });
 
-  it('returns 401 when no session', async () => {
+  it('throws UNAUTHORIZED when no session', async () => {
     const req = createMockReq();
     const res = createMockRes();
 
-    await me(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
+    await expect(me(req, res)).rejects.toThrow(ApiError);
+    await expect(me(req, res)).rejects.toMatchObject({
+      statusCode: 401,
+      code: 'UNAUTHORIZED',
+    });
   });
 
-  it('returns 401 when user not found in DB', async () => {
+  it('throws UNAUTHORIZED when user not found in DB', async () => {
     (getUserById as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const req = createMockReq({}, { userId: 'deleted-user' });
     const res = createMockRes();
 
-    await me(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
+    await expect(me(req, res)).rejects.toThrow(ApiError);
+    await expect(me(req, res)).rejects.toMatchObject({
+      statusCode: 401,
+      code: 'UNAUTHORIZED',
+    });
   });
 
   it('returns user data when authenticated', async () => {

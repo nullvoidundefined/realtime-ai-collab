@@ -1,7 +1,18 @@
 import express from 'express';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
+vi.mock('app/utils/logs/logger.js', () => ({
+  logger: {
+    error: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    fatal: vi.fn(),
+    flush: vi.fn(),
+  },
+}));
+
+import { errorHandler } from 'app/middleware/errorHandler/errorHandler.js';
 import { requireAuth } from './requireAuth.js';
 
 function createApp() {
@@ -16,6 +27,8 @@ function createApp() {
   app.get('/protected', requireAuth, (_req, res) => {
     res.json({ ok: true });
   });
+
+  app.use(errorHandler);
 
   return app;
 }
@@ -32,6 +45,8 @@ function createAppWithSession(userId: string) {
     res.json({ ok: true });
   });
 
+  app.use(errorHandler);
+
   return app;
 }
 
@@ -41,7 +56,10 @@ describe('requireAuth middleware', () => {
     const res = await request(app).get('/protected');
 
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'Unauthorized' });
+    expect(res.body).toEqual({
+      error: 'UNAUTHORIZED',
+      message: 'Authentication required',
+    });
   });
 
   it('allows request through when session has userId', async () => {
