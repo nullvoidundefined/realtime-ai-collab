@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import Providers from '@/components/Providers/Providers';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body>
-        <Providers>{children}</Providers>
+        <Providers><ErrorBoundary>{children}</ErrorBoundary></Providers>
         <Analytics />
         <SpeedInsights />
       </body>

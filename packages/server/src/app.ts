@@ -23,11 +23,14 @@ import helmet from 'helmet';
 import { createServer } from 'node:http';
 
 function validateEnv(): void {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('Fatal: DATABASE_URL is required');
+  const required = ['DATABASE_URL', 'SESSION_SECRET', 'ANTHROPIC_API_KEY'];
+  if (isProduction()) {
+    required.push('CORS_ORIGIN', 'REDIS_URL', 'CSRF_SECRET');
   }
-  if (isProduction() && !process.env.CORS_ORIGIN) {
-    throw new Error('Fatal: CORS_ORIGIN is required in production');
+  const missing = required.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    logger.error({ missing }, 'Missing required environment variables');
+    process.exit(1);
   }
 }
 

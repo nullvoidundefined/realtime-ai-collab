@@ -1,3 +1,4 @@
+import { ApiError } from 'app/utils/ApiError.js';
 import type { NextFunction, Request, Response } from 'express';
 
 export function requireAuth(
@@ -6,8 +7,7 @@ export function requireAuth(
   next: NextFunction,
 ): void {
   if (!req.session.userId) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
+    throw ApiError.unauthorized();
   }
   next();
 }
