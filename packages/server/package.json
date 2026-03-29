@@ -7,10 +7,10 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "migrate": "node-pg-migrate up -m migrations",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier . --write",
-    "format:check": "prettier . --check",
+    "lint": "eslint --config ../../eslint.config.bottomlessmargaritas.js .",
+    "lint:fix": "eslint --config ../../eslint.config.bottomlessmargaritas.js . --fix",
+    "format": "prettier --config ../../prettier.config.bottomlessmargaritas.js --write .",
+    "format:check": "prettier --config ../../prettier.config.bottomlessmargaritas.js --check .",
     "test": "vitest run"
   },
   "dependencies": {
