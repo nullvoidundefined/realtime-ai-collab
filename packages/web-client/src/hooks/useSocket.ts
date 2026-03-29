@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { fetchCsrfToken } from '@/lib/api';
 import { type Socket, io } from 'socket.io-client';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? 'http://localhost:3001';
@@ -13,18 +14,28 @@ export function useSocket(userId: string | null) {
   useEffect(() => {
     if (!userId) return;
 
-    const socket = io(WS_URL, {
-      auth: { userId },
-      withCredentials: true,
-    });
+    let socket: Socket | null = null;
 
-    socket.on('connect', () => setConnected(true));
-    socket.on('disconnect', () => setConnected(false));
+    async function connect() {
+      const csrfToken = await fetchCsrfToken();
 
-    socketRef.current = socket;
+      socket = io(WS_URL, {
+        auth: { userId, csrfToken },
+        withCredentials: true,
+      });
+
+      socket.on('connect', () => setConnected(true));
+      socket.on('disconnect', () => setConnected(false));
+
+      socketRef.current = socket;
+    }
+
+    connect();
 
     return () => {
-      socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
       socketRef.current = null;
       setConnected(false);
     };
