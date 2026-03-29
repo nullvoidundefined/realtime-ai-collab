@@ -1,13 +1,13 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { redis } from 'app/config/redis.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { setupCursorHandler } from './cursor.js';
 
 vi.mock('app/config/redis.js', () => ({
   redis: {
     setex: vi.fn(async () => 'OK'),
   },
 }));
-
-import { redis } from 'app/config/redis.js';
-import { setupCursorHandler } from './cursor.js';
 
 function createMockSocket() {
   const handlers = new Map<string, (...args: unknown[]) => void>();
@@ -33,14 +33,26 @@ describe('setupCursorHandler', () => {
 
   it('registers a cursor event handler', () => {
     const socket = createMockSocket();
-    setupCursorHandler(socket as any, createMockIo(), 'doc-1', 'user-1', '#3b82f6');
+    setupCursorHandler(
+      socket as any,
+      createMockIo(),
+      'doc-1',
+      'user-1',
+      '#3b82f6',
+    );
 
     expect(socket.on).toHaveBeenCalledWith('cursor', expect.any(Function));
   });
 
   it('stores cursor position in Redis with 30s TTL', async () => {
     const socket = createMockSocket();
-    setupCursorHandler(socket as any, createMockIo(), 'doc-1', 'user-1', '#3b82f6');
+    setupCursorHandler(
+      socket as any,
+      createMockIo(),
+      'doc-1',
+      'user-1',
+      '#3b82f6',
+    );
 
     const handler = socket._handlers.get('cursor')!;
     await handler({ documentId: 'doc-1', position: { line: 5, ch: 10 } });
@@ -63,7 +75,13 @@ describe('setupCursorHandler', () => {
 
   it('broadcasts cursor to other users in the document room', async () => {
     const socket = createMockSocket();
-    setupCursorHandler(socket as any, createMockIo(), 'doc-1', 'user-1', '#3b82f6');
+    setupCursorHandler(
+      socket as any,
+      createMockIo(),
+      'doc-1',
+      'user-1',
+      '#3b82f6',
+    );
 
     const handler = socket._handlers.get('cursor')!;
     await handler({ documentId: 'doc-1', position: { line: 1, ch: 0 } });

@@ -53,7 +53,7 @@ export default function SuggestionOverlay({
           value={editedText}
           onChange={(e) => setEditedText(e.target.value)}
           rows={6}
-          aria-label="Edit suggestion"
+          aria-label='Edit suggestion'
         />
       ) : (
         <div className={styles.suggestionText}>

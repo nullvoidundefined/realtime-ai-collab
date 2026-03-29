@@ -20,10 +20,7 @@ describe('checkSuggestionRate', () => {
     const mockRedis = createMockRedis();
 
     for (let i = 1; i <= 10; i++) {
-      const allowed = await checkSuggestionRate(
-        'user-1',
-        mockRedis as any,
-      );
+      const allowed = await checkSuggestionRate('user-1', mockRedis as any);
       expect(allowed).toBe(true);
     }
 

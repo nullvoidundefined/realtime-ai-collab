@@ -130,7 +130,7 @@ export default function DocumentPage() {
           defaultValue={doc?.title ?? 'Untitled'}
           className={styles.titleInput}
           onBlur={(e) => titleMutation.mutate(e.target.value)}
-          aria-label="Document title"
+          aria-label='Document title'
         />
         <div className={styles.headerRight}>
           <button

@@ -1,8 +1,8 @@
 import { isProduction } from 'app/config/env.js';
 import { doubleCsrf } from 'csrf-csrf';
 
-const { doubleCsrfProtection, generateCsrfToken, validateRequest } =
-  doubleCsrf({
+const { doubleCsrfProtection, generateCsrfToken, validateRequest } = doubleCsrf(
+  {
     getSecret: () => process.env.CSRF_SECRET!,
     getSessionIdentifier: (req) => (req as any).cookies?.sid ?? '',
     cookieName: '__csrf',
@@ -11,6 +11,7 @@ const { doubleCsrfProtection, generateCsrfToken, validateRequest } =
       sameSite: 'strict',
       secure: isProduction(),
     },
-  });
+  },
+);
 
 export { doubleCsrfProtection, generateCsrfToken, validateRequest };
