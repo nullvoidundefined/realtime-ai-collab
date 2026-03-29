@@ -1,11 +1,11 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { updateDocument } from 'app/repositories/documents/documents.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { setupEditHandler } from './edit.js';
 
 vi.mock('app/repositories/documents/documents.js', () => ({
   updateDocument: vi.fn(async () => ({ id: 'doc-1', content: 'new content' })),
 }));
-
-import { updateDocument } from 'app/repositories/documents/documents.js';
-import { setupEditHandler } from './edit.js';
 
 function createMockSocket() {
   const handlers = new Map<string, (...args: unknown[]) => void>();

@@ -10,41 +10,43 @@ packages/
 └── web-client/ # Next.js 15 App Router + Tiptap editor
 ```
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 15, React 19, Tiptap, TanStack Query, SCSS Modules |
-| Backend | Express 5, Socket.IO 4, Pino logging |
-| Database | PostgreSQL (pg + node-pg-migrate) |
-| Cache/Presence | Redis (ioredis) |
-| AI | Anthropic Claude API (streaming) |
-| Auth | express-session + bcryptjs |
+| Layer          | Technology                                                 |
+| -------------- | ---------------------------------------------------------- |
+| Frontend       | Next.js 15, React 19, Tiptap, TanStack Query, SCSS Modules |
+| Backend        | Express 5, Socket.IO 4, Pino logging                       |
+| Database       | PostgreSQL (pg + node-pg-migrate)                          |
+| Cache/Presence | Redis (ioredis)                                            |
+| AI             | Anthropic Claude API (streaming)                           |
+| Auth           | express-session + bcryptjs                                 |
 
 ## Socket.IO Events
 
 ### Client → Server
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `join` | `documentId` | Join a document room |
-| `edit` | `{ documentId, content }` | Broadcast text edit |
-| `cursor` | `{ documentId, position }` | Broadcast cursor position |
-| `ai:request` | `{ documentId, promptType, context }` | Request AI suggestion |
-| `ai:accept` | `{ documentId, suggestionId, currentContent }` | Accept and commit suggestion |
-| `ai:reject` | `{ documentId, suggestionId }` | Reject and abort suggestion |
-| `ai:edit` | `{ documentId, suggestionId, editedText, currentContent }` | Commit edited suggestion |
+
+| Event        | Payload                                                    | Description                  |
+| ------------ | ---------------------------------------------------------- | ---------------------------- |
+| `join`       | `documentId`                                               | Join a document room         |
+| `edit`       | `{ documentId, content }`                                  | Broadcast text edit          |
+| `cursor`     | `{ documentId, position }`                                 | Broadcast cursor position    |
+| `ai:request` | `{ documentId, promptType, context }`                      | Request AI suggestion        |
+| `ai:accept`  | `{ documentId, suggestionId, currentContent }`             | Accept and commit suggestion |
+| `ai:reject`  | `{ documentId, suggestionId }`                             | Reject and abort suggestion  |
+| `ai:edit`    | `{ documentId, suggestionId, editedText, currentContent }` | Commit edited suggestion     |
 
 ### Server → Client
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `user:joined` | `{ userId, color }` | A user joined the document |
-| `user:left` | `{ userId }` | A user left the document |
-| `edit` | `{ content, userId }` | Document content changed |
-| `cursor` | `{ userId, position, color }` | Cursor position update |
-| `presence` | `{ users }` | Snapshot of all online users |
-| `ai:stream` | `{ token, suggestionId }` | Streaming AI token |
-| `ai:complete` | `{ suggestionId, text }` | AI streaming complete |
-| `ai:committed` | `{ content }` | Suggestion committed to document |
-| `ai:rejected` | `{ suggestionId }` | Suggestion rejected |
-| `ai:error` | `{ message }` | AI error occurred |
+
+| Event          | Payload                       | Description                      |
+| -------------- | ----------------------------- | -------------------------------- |
+| `user:joined`  | `{ userId, color }`           | A user joined the document       |
+| `user:left`    | `{ userId }`                  | A user left the document         |
+| `edit`         | `{ content, userId }`         | Document content changed         |
+| `cursor`       | `{ userId, position, color }` | Cursor position update           |
+| `presence`     | `{ users }`                   | Snapshot of all online users     |
+| `ai:stream`    | `{ token, suggestionId }`     | Streaming AI token               |
+| `ai:complete`  | `{ suggestionId, text }`      | AI streaming complete            |
+| `ai:committed` | `{ content }`                 | Suggestion committed to document |
+| `ai:rejected`  | `{ suggestionId }`            | Suggestion rejected              |
+| `ai:error`     | `{ message }`                 | AI error occurred                |
 
 ## Human-in-the-Loop (HITL) Pattern
 
@@ -81,6 +83,7 @@ GET    /health
 ## Local Setup
 
 ### Prerequisites
+
 - Node.js 20+
 - pnpm 8+
 - PostgreSQL database
@@ -121,22 +124,22 @@ pnpm dev:web
 
 ### Server (`packages/server/.env`)
 
-| Variable | Description |
-|----------|-------------|
-| `NODE_ENV` | `development` or `production` |
-| `PORT` | HTTP server port (default: 3001) |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `REDIS_URL` | Redis connection string |
-| `ANTHROPIC_API_KEY` | Anthropic API key |
-| `SESSION_SECRET` | Session signing secret |
-| `CORS_ORIGIN` | Frontend origin (e.g. `http://localhost:3000`) |
+| Variable            | Description                                    |
+| ------------------- | ---------------------------------------------- |
+| `NODE_ENV`          | `development` or `production`                  |
+| `PORT`              | HTTP server port (default: 3001)               |
+| `DATABASE_URL`      | PostgreSQL connection string                   |
+| `REDIS_URL`         | Redis connection string                        |
+| `ANTHROPIC_API_KEY` | Anthropic API key                              |
+| `SESSION_SECRET`    | Session signing secret                         |
+| `CORS_ORIGIN`       | Frontend origin (e.g. `http://localhost:3000`) |
 
 ### Web Client (`packages/web-client/.env.local`)
 
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | Backend API URL |
-| `NEXT_PUBLIC_WS_URL` | WebSocket server URL |
+| Variable              | Description          |
+| --------------------- | -------------------- |
+| `NEXT_PUBLIC_API_URL` | Backend API URL      |
+| `NEXT_PUBLIC_WS_URL`  | WebSocket server URL |
 
 ## Database Schema
 

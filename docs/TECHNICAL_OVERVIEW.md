@@ -59,6 +59,7 @@ graph TB
 ```
 
 **Deployment targets:**
+
 - Frontend → Vercel (Next.js serverless)
 - API server + Socket.IO → Railway (Node.js)
 - Database → Neon (serverless PostgreSQL)
@@ -68,23 +69,23 @@ graph TB
 
 ## 3. Tech Stack
 
-| Layer | Technology | Version | Notes |
-|---|---|---|---|
-| **Frontend framework** | Next.js | 15.x | App Router |
-| **UI library** | React | 19.x | Server + client components |
-| **Rich text editor** | Tiptap | 2.x | ProseMirror-based, extensible |
-| **Language** | TypeScript | 5.x | Strict mode |
-| **API server** | Express | 5.x | Async error propagation built-in |
-| **Real-time** | Socket.IO | 4.x | WebSocket with HTTP fallback |
-| **Runtime** | Node.js | ≥ 20.0 | Required by both packages |
-| **Database** | PostgreSQL | 13+ | Hosted on Neon (serverless) |
-| **Cache/Presence** | Redis | — | Hosted on Railway, via ioredis |
-| **LLM** | Anthropic Claude | claude-haiku-4-5-20251001 | Streaming via SDK |
-| **Auth** | Custom sessions | — | bcryptjs + express-session + connect-pg-simple |
-| **Logging** | Pino | 10.x | JSON in prod, pino-pretty in dev |
-| **Validation** | Zod | 4.x | Schemas for all request bodies |
-| **Data fetching** | TanStack Query | 5.x | Server state management |
-| **Package manager** | pnpm | 9.x | Workspaces monorepo |
+| Layer                  | Technology       | Version                   | Notes                                          |
+| ---------------------- | ---------------- | ------------------------- | ---------------------------------------------- |
+| **Frontend framework** | Next.js          | 15.x                      | App Router                                     |
+| **UI library**         | React            | 19.x                      | Server + client components                     |
+| **Rich text editor**   | Tiptap           | 2.x                       | ProseMirror-based, extensible                  |
+| **Language**           | TypeScript       | 5.x                       | Strict mode                                    |
+| **API server**         | Express          | 5.x                       | Async error propagation built-in               |
+| **Real-time**          | Socket.IO        | 4.x                       | WebSocket with HTTP fallback                   |
+| **Runtime**            | Node.js          | ≥ 20.0                    | Required by both packages                      |
+| **Database**           | PostgreSQL       | 13+                       | Hosted on Neon (serverless)                    |
+| **Cache/Presence**     | Redis            | —                         | Hosted on Railway, via ioredis                 |
+| **LLM**                | Anthropic Claude | claude-haiku-4-5-20251001 | Streaming via SDK                              |
+| **Auth**               | Custom sessions  | —                         | bcryptjs + express-session + connect-pg-simple |
+| **Logging**            | Pino             | 10.x                      | JSON in prod, pino-pretty in dev               |
+| **Validation**         | Zod              | 4.x                       | Schemas for all request bodies                 |
+| **Data fetching**      | TanStack Query   | 5.x                       | Server state management                        |
+| **Package manager**    | pnpm             | 9.x                       | Workspaces monorepo                            |
 
 ---
 
@@ -94,37 +95,37 @@ graph TB
 
 **Runtime dependencies:**
 
-| Package | Purpose |
-|---|---|
-| `@anthropic-ai/sdk` | Streaming Claude API calls with AbortController support |
-| `@google-cloud/secret-manager` | Fetches secrets from GCP Secret Manager in production |
-| `bcryptjs` | Password hashing with 12 salt rounds |
-| `connect-pg-simple` | Stores express-session sessions in PostgreSQL |
-| `cookie-parser` | Parses HTTP cookies into `req.cookies` |
-| `cors` | Cross-origin resource sharing middleware |
-| `dotenv` | Loads `.env` file into `process.env` |
-| `express` | HTTP framework (v5) |
-| `express-rate-limit` | In-memory rate limiting |
-| `express-session` | Session middleware |
-| `helmet` | Security headers (CSP disabled for Socket.IO) |
-| `ioredis` | Redis client for presence, cursors, and suggestion locks |
-| `node-pg-migrate` | Database migrations |
-| `pg` | PostgreSQL client and connection pool |
-| `pino` / `pino-http` | Structured logging |
-| `socket.io` | WebSocket server for real-time events |
-| `zod` | Runtime schema validation |
+| Package                        | Purpose                                                  |
+| ------------------------------ | -------------------------------------------------------- |
+| `@anthropic-ai/sdk`            | Streaming Claude API calls with AbortController support  |
+| `@google-cloud/secret-manager` | Fetches secrets from GCP Secret Manager in production    |
+| `bcryptjs`                     | Password hashing with 12 salt rounds                     |
+| `connect-pg-simple`            | Stores express-session sessions in PostgreSQL            |
+| `cookie-parser`                | Parses HTTP cookies into `req.cookies`                   |
+| `cors`                         | Cross-origin resource sharing middleware                 |
+| `dotenv`                       | Loads `.env` file into `process.env`                     |
+| `express`                      | HTTP framework (v5)                                      |
+| `express-rate-limit`           | In-memory rate limiting                                  |
+| `express-session`              | Session middleware                                       |
+| `helmet`                       | Security headers (CSP disabled for Socket.IO)            |
+| `ioredis`                      | Redis client for presence, cursors, and suggestion locks |
+| `node-pg-migrate`              | Database migrations                                      |
+| `pg`                           | PostgreSQL client and connection pool                    |
+| `pino` / `pino-http`           | Structured logging                                       |
+| `socket.io`                    | WebSocket server for real-time events                    |
+| `zod`                          | Runtime schema validation                                |
 
 ### Web Client
 
-| Package | Purpose |
-|---|---|
-| `next` | React framework with App Router and SSR |
-| `react` / `react-dom` | UI library |
-| `@tiptap/react` / `@tiptap/starter-kit` | Rich text editor |
-| `@tanstack/react-query` | Server state management |
-| `socket.io-client` | WebSocket client for real-time events |
-| `sass` | SCSS compilation |
-| `@vercel/analytics` / `@vercel/speed-insights` | Performance monitoring |
+| Package                                        | Purpose                                 |
+| ---------------------------------------------- | --------------------------------------- |
+| `next`                                         | React framework with App Router and SSR |
+| `react` / `react-dom`                          | UI library                              |
+| `@tiptap/react` / `@tiptap/starter-kit`        | Rich text editor                        |
+| `@tanstack/react-query`                        | Server state management                 |
+| `socket.io-client`                             | WebSocket client for real-time events   |
+| `sass`                                         | SCSS compilation                        |
+| `@vercel/analytics` / `@vercel/speed-insights` | Performance monitoring                  |
 
 ---
 
@@ -225,6 +226,7 @@ realtime-ai-collaboration/
 The database has six tables. All primary keys are UUIDs generated by PostgreSQL. Foreign keys use `ON DELETE CASCADE` throughout. An `updated_at` trigger fires on every UPDATE.
 
 ### `users`
+
 ```sql
 CREATE TABLE users (
   id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -238,6 +240,7 @@ CREATE TABLE users (
 ```
 
 ### `documents`
+
 ```sql
 CREATE TABLE documents (
   id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -252,6 +255,7 @@ CREATE TABLE documents (
 ```
 
 ### `document_collaborators`
+
 ```sql
 CREATE TABLE document_collaborators (
   document_id UUID        NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
@@ -263,6 +267,7 @@ CREATE TABLE document_collaborators (
 ```
 
 ### `ai_suggestions`
+
 ```sql
 CREATE TABLE ai_suggestions (
   id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -278,6 +283,7 @@ CREATE TABLE ai_suggestions (
 ```
 
 ### `document_versions`
+
 ```sql
 CREATE TABLE document_versions (
   id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -289,6 +295,7 @@ CREATE TABLE document_versions (
 ```
 
 ### `session` (connect-pg-simple)
+
 ```sql
 CREATE TABLE session (
   sid    VARCHAR PRIMARY KEY,
@@ -306,43 +313,43 @@ All routes require `Content-Type: application/json`. State-changing requests req
 
 ### Authentication
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/auth/register` | No | Creates user + session. Body: `{ email, password, name }`. Returns `{ user }`. |
-| POST | `/auth/login` | No | Validates credentials, creates session. Returns `{ user }`. |
-| POST | `/auth/logout` | No | Destroys session, clears cookie. Returns 204. |
-| GET | `/auth/me` | Yes | Returns `{ user }` for current session. |
+| Method | Path             | Auth | Description                                                                    |
+| ------ | ---------------- | ---- | ------------------------------------------------------------------------------ |
+| POST   | `/auth/register` | No   | Creates user + session. Body: `{ email, password, name }`. Returns `{ user }`. |
+| POST   | `/auth/login`    | No   | Validates credentials, creates session. Returns `{ user }`.                    |
+| POST   | `/auth/logout`   | No   | Destroys session, clears cookie. Returns 204.                                  |
+| GET    | `/auth/me`       | Yes  | Returns `{ user }` for current session.                                        |
 
 ### Documents
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| GET | `/documents` | Yes | Lists user's own + collaborated documents. |
-| POST | `/documents` | Yes | Creates a new document. Body: `{ title? }`. |
-| GET | `/documents/:id` | Yes | Returns a single document. |
-| PUT | `/documents/:id` | Yes | Updates title and/or content. |
-| DELETE | `/documents/:id` | Yes | Deletes document (cascades to collaborators, suggestions, versions). |
+| Method | Path             | Auth | Description                                                          |
+| ------ | ---------------- | ---- | -------------------------------------------------------------------- |
+| GET    | `/documents`     | Yes  | Lists user's own + collaborated documents.                           |
+| POST   | `/documents`     | Yes  | Creates a new document. Body: `{ title? }`.                          |
+| GET    | `/documents/:id` | Yes  | Returns a single document.                                           |
+| PUT    | `/documents/:id` | Yes  | Updates title and/or content.                                        |
+| DELETE | `/documents/:id` | Yes  | Deletes document (cascades to collaborators, suggestions, versions). |
 
 ### Sharing
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/documents/:id/share` | Yes | Generates or returns share token. Returns `{ shareUrl }`. |
-| POST | `/documents/join` | Yes | Joins via share token. Body: `{ token }`. Adds user as collaborator. |
+| Method | Path                   | Auth | Description                                                          |
+| ------ | ---------------------- | ---- | -------------------------------------------------------------------- |
+| POST   | `/documents/:id/share` | Yes  | Generates or returns share token. Returns `{ shareUrl }`.            |
+| POST   | `/documents/join`      | Yes  | Joins via share token. Body: `{ token }`. Adds user as collaborator. |
 
 ### Suggestions & Versions
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| GET | `/documents/:id/suggestions` | Yes | Lists suggestions. Optional `?status=` filter. |
-| GET | `/documents/:id/versions` | Yes | Lists version snapshots (newest first). |
+| Method | Path                         | Auth | Description                                    |
+| ------ | ---------------------------- | ---- | ---------------------------------------------- |
+| GET    | `/documents/:id/suggestions` | Yes  | Lists suggestions. Optional `?status=` filter. |
+| GET    | `/documents/:id/versions`    | Yes  | Lists version snapshots (newest first).        |
 
 ### Health
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| GET | `/health` | No | Returns `{ status: "ok" }`. |
-| GET | `/health/ready` | No | Queries DB; returns `{ status: "ok", db: "connected" }` or 503. |
+| Method | Path            | Auth | Description                                                     |
+| ------ | --------------- | ---- | --------------------------------------------------------------- |
+| GET    | `/health`       | No   | Returns `{ status: "ok" }`.                                     |
+| GET    | `/health/ready` | No   | Queries DB; returns `{ status: "ok", db: "connected" }` or 503. |
 
 ---
 
@@ -352,30 +359,30 @@ All real-time communication flows through Socket.IO. The server authenticates co
 
 ### Client → Server
 
-| Event | Payload | Description |
-|---|---|---|
-| `join` | `documentId` | Join document room, receive presence snapshot |
-| `edit` | `{ documentId, content }` | Broadcast text edit to all users in room |
-| `cursor` | `{ documentId, position }` | Broadcast cursor position (stored 30s in Redis) |
-| `ai:request` | `{ documentId, promptType, context }` | Request AI suggestion (blocked if one already active) |
-| `ai:accept` | `{ documentId, suggestionId, currentContent }` | Accept suggestion, append to document, create version |
-| `ai:reject` | `{ documentId, suggestionId }` | Reject suggestion, abort streaming if in progress |
-| `ai:edit` | `{ documentId, suggestionId, editedText, currentContent }` | Commit edited suggestion text |
+| Event        | Payload                                                    | Description                                           |
+| ------------ | ---------------------------------------------------------- | ----------------------------------------------------- |
+| `join`       | `documentId`                                               | Join document room, receive presence snapshot         |
+| `edit`       | `{ documentId, content }`                                  | Broadcast text edit to all users in room              |
+| `cursor`     | `{ documentId, position }`                                 | Broadcast cursor position (stored 30s in Redis)       |
+| `ai:request` | `{ documentId, promptType, context }`                      | Request AI suggestion (blocked if one already active) |
+| `ai:accept`  | `{ documentId, suggestionId, currentContent }`             | Accept suggestion, append to document, create version |
+| `ai:reject`  | `{ documentId, suggestionId }`                             | Reject suggestion, abort streaming if in progress     |
+| `ai:edit`    | `{ documentId, suggestionId, editedText, currentContent }` | Commit edited suggestion text                         |
 
 ### Server → Client
 
-| Event | Payload | Description |
-|---|---|---|
-| `presence` | `{ users: [{ userId, color }] }` | Snapshot of online users (sent on join) |
-| `user:joined` | `{ userId, color }` | User joined the document room |
-| `user:left` | `{ userId }` | User left the document room |
-| `edit` | `{ content, userId }` | Document edited by another user |
-| `cursor` | `{ userId, position, color }` | Cursor position update from another user |
-| `ai:stream` | `{ token, suggestionId }` | Streaming token from Claude |
-| `ai:complete` | `{ suggestionId, text }` | Streaming finished, suggestion now 'pending' |
-| `ai:committed` | `{ content }` | Suggestion committed (accepted or edited) — all users update |
-| `ai:rejected` | `{ suggestionId }` | Suggestion rejected |
-| `ai:error` | `{ message }` | AI streaming failed |
+| Event          | Payload                          | Description                                                  |
+| -------------- | -------------------------------- | ------------------------------------------------------------ |
+| `presence`     | `{ users: [{ userId, color }] }` | Snapshot of online users (sent on join)                      |
+| `user:joined`  | `{ userId, color }`              | User joined the document room                                |
+| `user:left`    | `{ userId }`                     | User left the document room                                  |
+| `edit`         | `{ content, userId }`            | Document edited by another user                              |
+| `cursor`       | `{ userId, position, color }`    | Cursor position update from another user                     |
+| `ai:stream`    | `{ token, suggestionId }`        | Streaming token from Claude                                  |
+| `ai:complete`  | `{ suggestionId, text }`         | Streaming finished, suggestion now 'pending'                 |
+| `ai:committed` | `{ content }`                    | Suggestion committed (accepted or edited) — all users update |
+| `ai:rejected`  | `{ suggestionId }`               | Suggestion rejected                                          |
+| `ai:error`     | `{ message }`                    | AI streaming failed                                          |
 
 ---
 
@@ -455,7 +462,7 @@ socket.on('ai:reject', () => abortController.abort());
 
 const stream = anthropic.messages.stream(
   { model, messages, max_tokens, system },
-  { signal: abortController.signal }
+  { signal: abortController.signal },
 );
 ```
 
@@ -465,11 +472,11 @@ const stream = anthropic.messages.stream(
 
 **Presence tracking:**
 
-| Redis Structure | Purpose |
-|---|---|
-| `presence:{documentId}` (sorted set) | Active user IDs with join timestamps |
-| `cursors:{documentId}:{userId}` (string, 30s TTL) | Last known cursor position + color |
-| `active_suggestion:{documentId}` (string, 5min TTL) | Lock for one-suggestion-at-a-time |
+| Redis Structure                                     | Purpose                              |
+| --------------------------------------------------- | ------------------------------------ |
+| `presence:{documentId}` (sorted set)                | Active user IDs with join timestamps |
+| `cursors:{documentId}:{userId}` (string, 30s TTL)   | Last known cursor position + color   |
+| `active_suggestion:{documentId}` (string, 5min TTL) | Lock for one-suggestion-at-a-time    |
 
 **User join flow:**
 
@@ -504,14 +511,14 @@ Custom session-based authentication backed by PostgreSQL via `connect-pg-simple`
 
 **Session details:**
 
-| Property | Value |
-|---|---|
-| Cookie name | `sid` |
-| TTL | 7 days |
-| HttpOnly | true |
-| Secure | true in production |
-| SameSite | lax |
-| Store | PostgreSQL via connect-pg-simple |
+| Property    | Value                            |
+| ----------- | -------------------------------- |
+| Cookie name | `sid`                            |
+| TTL         | 7 days                           |
+| HttpOnly    | true                             |
+| Secure      | true in production               |
+| SameSite    | lax                              |
+| Store       | PostgreSQL via connect-pg-simple |
 
 **Password hashing:** bcryptjs with 12 salt rounds.
 
@@ -551,6 +558,7 @@ flowchart TB
 ### Rich Text Editor (Tiptap)
 
 The document editor is built on Tiptap 2, a headless ProseMirror wrapper. It provides:
+
 - Standard formatting (bold, italic, headings, lists, code blocks)
 - Custom toolbar component with formatting buttons
 - Remote edit handling via `isRemoteUpdate` flag
@@ -559,18 +567,19 @@ The document editor is built on Tiptap 2, a headless ProseMirror wrapper. It pro
 ### Suggestion UI
 
 Three components manage the AI suggestion lifecycle:
+
 - **SuggestionOverlay** — displays streaming tokens in a highlighted overlay
 - **SuggestionControls** — Accept/Edit/Reject buttons (visible only to requester)
 - **SuggestionHistory** — lists past suggestions with their statuses
 
 ### Custom Hooks
 
-| Hook | Purpose |
-|---|---|
-| `useSocket` | Manages Socket.IO connection lifecycle, reconnection |
+| Hook            | Purpose                                                                 |
+| --------------- | ----------------------------------------------------------------------- |
+| `useSocket`     | Manages Socket.IO connection lifecycle, reconnection                    |
 | `useSuggestion` | Tracks suggestion state machine (idle → streaming → pending → resolved) |
-| `usePresence` | Tracks online users and cursor positions |
-| `useToast` | Manages toast notification queue |
+| `usePresence`   | Tracks online users and cursor positions                                |
+| `useToast`      | Manages toast notification queue                                        |
 
 ### State Management
 
@@ -589,6 +598,7 @@ Deployed as a Node.js service on Railway. Socket.IO runs on the same port as the
 ### Frontend (Vercel)
 
 Next.js deployed to Vercel. Environment variables set:
+
 - `NEXT_PUBLIC_API_URL` — Railway API URL
 - `NEXT_PUBLIC_WS_URL` — Railway WebSocket URL (same as API URL)
 
@@ -596,24 +606,24 @@ Next.js deployed to Vercel. Environment variables set:
 
 **Server:**
 
-| Variable | Required | Description |
-|---|---|---|
-| `DATABASE_URL` | Yes | PostgreSQL connection string (Neon) |
-| `REDIS_URL` | Yes | Redis connection string (presence, cursors, locks) |
-| `ANTHROPIC_API_KEY` | Yes | Claude API key |
-| `SESSION_SECRET` | Yes | Secret for signing session cookies |
-| `CORS_ORIGIN` | Yes (prod) | Frontend URL |
-| `NODE_ENV` | No | Set to `production` on Railway |
-| `PORT` | No | HTTP port (default: 3001) |
-| `GCP_PROJECT_ID` | No | GCP project for Secret Manager |
-| `GCP_SA_JSON` | No | GCP service account credentials JSON |
+| Variable            | Required   | Description                                        |
+| ------------------- | ---------- | -------------------------------------------------- |
+| `DATABASE_URL`      | Yes        | PostgreSQL connection string (Neon)                |
+| `REDIS_URL`         | Yes        | Redis connection string (presence, cursors, locks) |
+| `ANTHROPIC_API_KEY` | Yes        | Claude API key                                     |
+| `SESSION_SECRET`    | Yes        | Secret for signing session cookies                 |
+| `CORS_ORIGIN`       | Yes (prod) | Frontend URL                                       |
+| `NODE_ENV`          | No         | Set to `production` on Railway                     |
+| `PORT`              | No         | HTTP port (default: 3001)                          |
+| `GCP_PROJECT_ID`    | No         | GCP project for Secret Manager                     |
+| `GCP_SA_JSON`       | No         | GCP service account credentials JSON               |
 
 **Web Client:**
 
-| Variable | Required | Description |
-|---|---|---|
-| `NEXT_PUBLIC_API_URL` | Yes | API base URL |
-| `NEXT_PUBLIC_WS_URL` | Yes | WebSocket URL (usually same as API URL) |
+| Variable              | Required | Description                             |
+| --------------------- | -------- | --------------------------------------- |
+| `NEXT_PUBLIC_API_URL` | Yes      | API base URL                            |
+| `NEXT_PUBLIC_WS_URL`  | Yes      | WebSocket URL (usually same as API URL) |
 
 ---
 
@@ -622,6 +632,7 @@ Next.js deployed to Vercel. Environment variables set:
 ### Socket.IO over SSE for AI Streaming
 
 Earlier apps (2, 4) use Server-Sent Events for streaming. This app uses Socket.IO because:
+
 1. The app already requires WebSockets for collaborative editing and presence
 2. AI suggestions need to be broadcast to all users in a room, not just the requester
 3. Socket.IO's room abstraction maps naturally to documents

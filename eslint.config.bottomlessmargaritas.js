@@ -8,10 +8,15 @@ import security from 'eslint-plugin-security';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default tseslint.config([
   {
-    ignores: ['build', 'dist', 'node_modules', '**/*.d.ts', '.turbo'],
+    ignores: ['build', 'dist', 'node_modules', '**/*.d.ts', '.turbo', '**/.next', '**/vitest.config.ts'],
   },
   {
     linterOptions: {
@@ -23,7 +28,7 @@ export default tseslint.config([
       'unused-imports': unusedImports,
     },
     rules: {
-      'curly': 'error',
+      curly: 'error',
       'no-console': ['warn', { allow: ['warn', 'info', 'error', 'group'] }],
       'no-implicit-globals': 'error',
       'no-param-reassign': ['error', { props: false }],
@@ -76,11 +81,15 @@ export default tseslint.config([
         ecmaFeatures: { jsx: true },
         ecmaVersion: 'latest',
         project: ['./tsconfig.json'],
+        tsconfigRootDir: __dirname,
         sourceType: 'module',
       },
     },
     rules: {
-      '@typescript-eslint/ban-ts-comment': ['warn', { 'ts-ignore': 'allow-with-description' }],
+      '@typescript-eslint/ban-ts-comment': [
+        'warn',
+        { 'ts-ignore': 'allow-with-description' },
+      ],
       '@typescript-eslint/consistent-type-definitions': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'warn',

@@ -1,4 +1,28 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import {
+  addCollaborator,
+  createDocument,
+  deleteDocument,
+  getDocumentById,
+  getDocumentByShareToken,
+  getUserDocuments,
+  getVersions,
+  updateDocument,
+} from 'app/repositories/documents/documents.js';
+import { getDocumentSuggestions } from 'app/repositories/suggestions/suggestions.js';
+import { ApiError } from 'app/utils/ApiError.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+  createDocumentHandler,
+  deleteDocumentHandler,
+  getDocument,
+  getSuggestionsHandler,
+  getVersionsHandler,
+  joinDocument,
+  listDocuments,
+  shareDocument,
+  updateDocumentHandler,
+} from './documents.js';
 
 vi.mock('app/repositories/documents/documents.js', () => ({
   createDocument: vi.fn(),
@@ -16,33 +40,7 @@ vi.mock('app/repositories/suggestions/suggestions.js', () => ({
   getDocumentSuggestions: vi.fn(),
 }));
 
-import {
-  createDocument,
-  getDocumentById,
-  getUserDocuments,
-  updateDocument,
-  deleteDocument,
-  getDocumentByShareToken,
-  addCollaborator,
-  getVersions,
-} from 'app/repositories/documents/documents.js';
-import { getDocumentSuggestions } from 'app/repositories/suggestions/suggestions.js';
-import { ApiError } from 'app/utils/ApiError.js';
-import {
-  createDocumentHandler,
-  deleteDocumentHandler,
-  getDocument,
-  getSuggestionsHandler,
-  getVersionsHandler,
-  joinDocument,
-  listDocuments,
-  shareDocument,
-  updateDocumentHandler,
-} from './documents.js';
-
-function createMockReq(
-  overrides: Record<string, unknown> = {},
-) {
+function createMockReq(overrides: Record<string, unknown> = {}) {
   return {
     body: {},
     params: {},
@@ -261,7 +259,9 @@ describe('joinDocument', () => {
   });
 
   it('throws NOT_FOUND for invalid share token', async () => {
-    (getDocumentByShareToken as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+    (getDocumentByShareToken as ReturnType<typeof vi.fn>).mockResolvedValue(
+      null,
+    );
 
     const req = createMockReq({ body: { shareToken: 'invalid' } });
     const res = createMockRes();
@@ -275,7 +275,9 @@ describe('joinDocument', () => {
 
   it('adds collaborator and returns document on success', async () => {
     const doc = { id: 'doc-1', title: 'Shared' };
-    (getDocumentByShareToken as ReturnType<typeof vi.fn>).mockResolvedValue(doc);
+    (getDocumentByShareToken as ReturnType<typeof vi.fn>).mockResolvedValue(
+      doc,
+    );
     (addCollaborator as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
     const req = createMockReq({ body: { shareToken: 'valid-token' } });
@@ -310,7 +312,9 @@ describe('getSuggestionsHandler', () => {
 
   it('returns all suggestions when no status filter', async () => {
     const suggestions = [{ id: 's-1' }];
-    (getDocumentSuggestions as ReturnType<typeof vi.fn>).mockResolvedValue(suggestions);
+    (getDocumentSuggestions as ReturnType<typeof vi.fn>).mockResolvedValue(
+      suggestions,
+    );
 
     const req = createMockReq({ params: { id: 'doc-1' }, query: {} });
     const res = createMockRes();

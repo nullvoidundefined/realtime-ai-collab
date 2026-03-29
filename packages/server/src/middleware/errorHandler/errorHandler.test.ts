@@ -1,6 +1,9 @@
+import { ApiError } from 'app/utils/ApiError.js';
 import express from 'express';
 import request from 'supertest';
 import { describe, expect, it, vi } from 'vitest';
+
+import { errorHandler } from './errorHandler.js';
 
 vi.mock('app/utils/logs/logger.js', () => ({
   logger: {
@@ -11,9 +14,6 @@ vi.mock('app/utils/logs/logger.js', () => ({
     flush: vi.fn(),
   },
 }));
-
-import { ApiError } from 'app/utils/ApiError.js';
-import { errorHandler } from './errorHandler.js';
 
 function createApp() {
   const app = express();

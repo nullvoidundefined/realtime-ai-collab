@@ -1,6 +1,9 @@
+import { errorHandler } from 'app/middleware/errorHandler/errorHandler.js';
 import express from 'express';
 import request from 'supertest';
 import { describe, expect, it, vi } from 'vitest';
+
+import { notFoundHandler } from './notFoundHandler.js';
 
 vi.mock('app/utils/logs/logger.js', () => ({
   logger: {
@@ -11,9 +14,6 @@ vi.mock('app/utils/logs/logger.js', () => ({
     flush: vi.fn(),
   },
 }));
-
-import { errorHandler } from 'app/middleware/errorHandler/errorHandler.js';
-import { notFoundHandler } from './notFoundHandler.js';
 
 function createApp() {
   const app = express();

@@ -1,4 +1,16 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { redis } from 'app/config/redis.js';
+import {
+  createVersion,
+  updateDocument,
+} from 'app/repositories/documents/documents.js';
+import {
+  createSuggestion,
+  updateSuggestionStatus,
+} from 'app/repositories/suggestions/suggestions.js';
+import { streamSuggestion } from 'app/services/suggestion.service.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { setupAiHandlers } from './ai.js';
 
 vi.mock('app/config/redis.js', () => {
   const store = new Map<string, string>();
@@ -41,18 +53,6 @@ vi.mock('app/repositories/suggestions/suggestions.js', () => ({
 vi.mock('app/services/suggestion.service.js', () => ({
   streamSuggestion: vi.fn(async () => {}),
 }));
-
-import { redis } from 'app/config/redis.js';
-import {
-  updateDocument,
-  createVersion,
-} from 'app/repositories/documents/documents.js';
-import {
-  createSuggestion,
-  updateSuggestionStatus,
-} from 'app/repositories/suggestions/suggestions.js';
-import { streamSuggestion } from 'app/services/suggestion.service.js';
-import { setupAiHandlers } from './ai.js';
 
 function createMockSocket() {
   const handlers = new Map<string, (...args: unknown[]) => void>();
@@ -234,9 +234,9 @@ describe('HITL state machine', () => {
     });
 
     it('emits ai:error when suggestion not found', async () => {
-      (updateSuggestionStatus as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
-        null,
-      );
+      (
+        updateSuggestionStatus as ReturnType<typeof vi.fn>
+      ).mockResolvedValueOnce(null);
 
       const socket = createMockSocket();
       const io = createMockIo();

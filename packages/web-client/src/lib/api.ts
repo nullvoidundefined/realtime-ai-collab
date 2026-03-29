@@ -34,10 +34,14 @@ export function clearCsrfToken(): void {
   csrfToken = null;
 }
 
-function parseErrorBody(body: Record<string, unknown>, fallback: string): { message: string; code?: string } {
-  const message = (typeof body.message === 'string' ? body.message : null)
-    ?? (typeof body.error === 'string' ? body.error : null)
-    ?? fallback;
+function parseErrorBody(
+  body: Record<string, unknown>,
+  fallback: string,
+): { message: string; code?: string } {
+  const message =
+    (typeof body.message === 'string' ? body.message : null) ??
+    (typeof body.error === 'string' ? body.error : null) ??
+    fallback;
   const code = typeof body.error === 'string' ? body.error : undefined;
   return { message, code };
 }
@@ -62,7 +66,10 @@ export async function apiFetch<T>(
   /* If a 403 with CSRF-related message, retry once with a fresh token */
   if (res.status === 403) {
     const body = await res.json().catch(() => ({ error: '' }));
-    const errorText = [body.error, body.message].filter(Boolean).join(' ').toLowerCase();
+    const errorText = [body.error, body.message]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
     if (errorText.includes('csrf')) {
       clearCsrfToken();
       const freshToken = await fetchCsrfToken();
@@ -77,7 +84,9 @@ export async function apiFetch<T>(
         },
       });
       if (!retry.ok) {
-        const retryBody = await retry.json().catch(() => ({ error: retry.statusText }));
+        const retryBody = await retry
+          .json()
+          .catch(() => ({ error: retry.statusText }));
         const parsed = parseErrorBody(retryBody, retry.statusText);
         throw new ApiError(retry.status, parsed.message, parsed.code);
       }

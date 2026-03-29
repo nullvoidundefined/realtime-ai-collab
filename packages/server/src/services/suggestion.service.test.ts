@@ -1,4 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { updateSuggestionStatus } from 'app/repositories/suggestions/suggestions.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { streamSuggestion } from './suggestion.service.js';
 
 // Mock dependencies before importing
 const { mockStream } = vi.hoisted(() => ({
@@ -32,9 +35,6 @@ vi.mock('app/prompts/summarize.js', () => ({
 vi.mock('app/prompts/expand.js', () => ({
   buildExpandPrompt: vi.fn((ctx: string) => `expand: ${ctx}`),
 }));
-
-import { updateSuggestionStatus } from 'app/repositories/suggestions/suggestions.js';
-import { streamSuggestion } from './suggestion.service.js';
 
 function createMockIo() {
   const emitFn = vi.fn();
@@ -79,9 +79,7 @@ describe('streamSuggestion', () => {
   });
 
   it('streams tokens and emits ai:stream for each', async () => {
-    mockStream.mockResolvedValue(
-      createMockStream(['Hello', ' world', '!']),
-    );
+    mockStream.mockResolvedValue(createMockStream(['Hello', ' world', '!']));
 
     const io = createMockIo();
     const abort = new AbortController();
@@ -100,15 +98,19 @@ describe('streamSuggestion', () => {
       (c: unknown[]) => c[0] === 'ai:stream',
     );
     expect(streamCalls).toHaveLength(3);
-    expect(streamCalls[0][1]).toEqual({ token: 'Hello', suggestionId: 'sug-1' });
-    expect(streamCalls[1][1]).toEqual({ token: ' world', suggestionId: 'sug-1' });
+    expect(streamCalls[0][1]).toEqual({
+      token: 'Hello',
+      suggestionId: 'sug-1',
+    });
+    expect(streamCalls[1][1]).toEqual({
+      token: ' world',
+      suggestionId: 'sug-1',
+    });
     expect(streamCalls[2][1]).toEqual({ token: '!', suggestionId: 'sug-1' });
   });
 
   it('emits ai:complete with full text on success', async () => {
-    mockStream.mockResolvedValue(
-      createMockStream(['Hello', ' world']),
-    );
+    mockStream.mockResolvedValue(createMockStream(['Hello', ' world']));
 
     const io = createMockIo();
     const abort = new AbortController();
@@ -133,9 +135,7 @@ describe('streamSuggestion', () => {
   });
 
   it('updates suggestion status to pending with full text on success', async () => {
-    mockStream.mockResolvedValue(
-      createMockStream(['Done']),
-    );
+    mockStream.mockResolvedValue(createMockStream(['Done']));
 
     const io = createMockIo();
     const abort = new AbortController();
@@ -158,9 +158,7 @@ describe('streamSuggestion', () => {
   });
 
   it('emits ai:error and sets status to rejected on API failure', async () => {
-    mockStream.mockResolvedValue(
-      createErrorStream(['partial']),
-    );
+    mockStream.mockResolvedValue(createErrorStream(['partial']));
 
     const io = createMockIo();
     const abort = new AbortController();
@@ -215,9 +213,7 @@ describe('streamSuggestion', () => {
   });
 
   it('uses correct prompt type for improve', async () => {
-    mockStream.mockResolvedValue(
-      createMockStream(['improved']),
-    );
+    mockStream.mockResolvedValue(createMockStream(['improved']));
 
     const io = createMockIo();
     const abort = new AbortController();

@@ -39,11 +39,19 @@ export default function ShareModal({ documentId, onClose }: ShareModalProps) {
   }
 
   return (
-    <button className={styles.overlay} onClick={onClose} aria-label="Close modal">
+    <button
+      className={styles.overlay}
+      onClick={onClose}
+      aria-label='Close modal'
+    >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2 className={styles.title}>Share Document</h2>
-          <button onClick={onClose} className={styles.closeButton} aria-label="Close">
+          <button
+            onClick={onClose}
+            className={styles.closeButton}
+            aria-label='Close'
+          >
             ✕
           </button>
         </div>
@@ -78,7 +86,7 @@ export default function ShareModal({ documentId, onClose }: ShareModalProps) {
                   readOnly
                   value={shareUrl}
                   className={styles.urlInput}
-                  aria-label="Share URL"
+                  aria-label='Share URL'
                 />
                 <button onClick={handleCopy} className={styles.copyButton}>
                   {copied ? 'Copied!' : 'Copy'}

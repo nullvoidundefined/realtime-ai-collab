@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body>
-        <Providers><ErrorBoundary>{children}</ErrorBoundary></Providers>
+        <Providers>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </Providers>
         <Analytics />
         <SpeedInsights />
       </body>

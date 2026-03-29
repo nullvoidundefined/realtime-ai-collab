@@ -1,4 +1,13 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import {
+  createUser,
+  getUserByEmail,
+  getUserById,
+} from 'app/repositories/auth/auth.js';
+import { hashPassword, verifyPassword } from 'app/services/auth.service.js';
+import { ApiError } from 'app/utils/ApiError.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { login, logout, me, register } from './auth.js';
 
 vi.mock('app/repositories/auth/auth.js', () => ({
   getUserByEmail: vi.fn(),
@@ -11,19 +20,10 @@ vi.mock('app/services/auth.service.js', () => ({
   verifyPassword: vi.fn(),
 }));
 
-import {
-  getUserByEmail,
-  getUserById,
-  createUser,
-} from 'app/repositories/auth/auth.js';
-import {
-  hashPassword,
-  verifyPassword,
-} from 'app/services/auth.service.js';
-import { ApiError } from 'app/utils/ApiError.js';
-import { login, logout, me, register } from './auth.js';
-
-function createMockReq(body: Record<string, unknown> = {}, session: Record<string, unknown> = {}) {
+function createMockReq(
+  body: Record<string, unknown> = {},
+  session: Record<string, unknown> = {},
+) {
   return {
     body,
     session: {
