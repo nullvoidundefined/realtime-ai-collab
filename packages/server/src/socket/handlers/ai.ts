@@ -8,9 +8,21 @@ import {
   updateSuggestionStatus,
 } from 'app/repositories/suggestions/suggestions.js';
 import { streamSuggestion } from 'app/services/suggestion.service.js';
+import type { Redis } from 'ioredis';
 import type { Server, Socket } from 'socket.io';
 
 const abortControllers = new Map<string, AbortController>();
+
+/** Max 10 suggestion requests per 5 minutes per user. */
+export async function checkSuggestionRate(
+  userId: string,
+  redisClient: Redis,
+): Promise<boolean> {
+  const key = `suggestion_rate:${userId}`;
+  const count = await redisClient.incr(key);
+  if (count === 1) await redisClient.expire(key, 300); // 5 minutes
+  return count <= 10;
+}
 
 export function setupAiHandlers(
   socket: Socket,
@@ -25,6 +37,16 @@ export function setupAiHandlers(
       promptType: string;
       context: string;
     }) => {
+      // Check suggestion rate limit
+      const allowed = await checkSuggestionRate(userId, redis);
+      if (!allowed) {
+        socket.emit('rate_limited', {
+          error: 'RATE_LIMITED',
+          message: 'Too many suggestion requests, please try again later',
+        });
+        return;
+      }
+
       // Check if there's already an active suggestion for this doc
       const existing = await redis.get(`active_suggestion:${data.documentId}`);
       if (existing) {
