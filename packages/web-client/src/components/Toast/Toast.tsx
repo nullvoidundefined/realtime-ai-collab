@@ -25,7 +25,7 @@ export default function Toast({
   return (
     <div className={`${styles.toast} ${styles[type]}`}>
       <span className={styles.message}>{message}</span>
-      <button onClick={onDismiss} className={styles.dismiss}>
+      <button onClick={onDismiss} className={styles.dismiss} aria-label="Dismiss">
         ✕
       </button>
     </div>
