@@ -7,16 +7,24 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import security from 'eslint-plugin-security';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
+import { dirname } from 'path';
 import tseslint from 'typescript-eslint';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default tseslint.config([
   {
-    ignores: ['build', 'dist', 'node_modules', '**/*.d.ts', '.turbo', '**/.next', '**/vitest.config.ts'],
+    ignores: [
+      'build',
+      'dist',
+      'node_modules',
+      '**/*.d.ts',
+      '.turbo',
+      '**/.next',
+      '**/vitest.config.ts',
+    ],
   },
   {
     linterOptions: {
