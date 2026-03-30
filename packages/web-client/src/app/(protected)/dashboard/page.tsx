@@ -3,7 +3,6 @@
 import { apiFetch } from '@/lib/api';
 import type { Document } from '@/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import styles from './page.module.scss';
@@ -47,12 +46,6 @@ export default function DashboardPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>My Documents</h1>
         <div className={styles.headerActions}>
-          <Link href='/documents/summary' className={styles.navLink}>
-            Summary
-          </Link>
-          <Link href='/documents/technical-overview' className={styles.navLink}>
-            Technical Overview
-          </Link>
           <button
             onClick={() => createMutation.mutate()}
             className={styles.createButton}
