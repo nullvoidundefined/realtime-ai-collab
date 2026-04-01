@@ -2,42 +2,32 @@
 
 import { useState } from 'react';
 
-import { apiFetch } from '@/lib/api';
-import type { User } from '@/types';
-import { useMutation } from '@tanstack/react-query';
+import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import styles from './page.module.scss';
 
-interface LoginResponse {
-  user: User;
-}
-
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isPending, setIsPending] = useState(false);
 
-  const mutation = useMutation({
-    mutationFn: () =>
-      apiFetch<LoginResponse>('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      }),
-    onSuccess: () => {
-      router.push('/dashboard');
-    },
-    onError: (err: Error) => {
-      setError(err.message);
-    },
-  });
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    mutation.mutate();
+    setIsPending(true);
+    try {
+      await login(email, password);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (
@@ -75,9 +65,9 @@ export default function LoginPage() {
           <button
             type='submit'
             className={styles.submitButton}
-            disabled={mutation.isPending}
+            disabled={isPending}
           >
-            {mutation.isPending ? 'Signing in...' : 'Sign In'}
+            {isPending ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
         <p className={styles.link}>

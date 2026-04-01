@@ -1,31 +1,37 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+'use client';
 
-async function getUser() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
+import { useEffect } from 'react';
 
-  const res = await fetch(`${API_URL}/auth/me`, {
-    headers: {
-      Cookie: cookieHeader,
-      'X-Requested-With': 'XMLHttpRequest',
-    },
-    cache: 'no-store',
-  });
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
-  if (!res.ok) return null;
-  return res.json();
-}
-
-export default async function ProtectedLayout({
+export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const data = await getUser();
-  if (!data?.user) {
-    redirect('/login');
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return <>{children}</>;

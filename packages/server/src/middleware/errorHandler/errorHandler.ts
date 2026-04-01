@@ -21,6 +21,13 @@ export function errorHandler(
     return;
   }
 
+  const status = (err as any).status ?? (err as any).statusCode ?? 500;
+  if (status < 500) {
+    logger.warn({ err, path: req.path }, err.message);
+    res.status(status).json({ error: err.message, message: err.message });
+    return;
+  }
+
   logger.error({ err, path: req.path }, 'Unhandled error');
   res
     .status(500)

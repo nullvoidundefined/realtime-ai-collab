@@ -5,6 +5,7 @@ const PROJECT_ID = process.env.GCP_PROJECT_ID ?? '67254912843';
 const SECRET_MAP: Record<string, string> = {
   ANTHROPIC_API_KEY: 'ANTHROPIC_API_KEY',
   SESSION_SECRET: 'SESSION_SECRET',
+  CSRF_SECRET: 'CSRF_SECRET',
 };
 
 async function fetchSecret(

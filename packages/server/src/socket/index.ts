@@ -27,7 +27,9 @@ export function getUserColor(userId: string): string {
 export function initSocket(httpServer: HttpServer): Server {
   const io = new Server(httpServer, {
     cors: {
-      origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+      origin: (process.env.CORS_ORIGIN ?? 'http://localhost:3000')
+        .split(',')
+        .map((o) => o.trim()),
       credentials: true,
     },
   });
