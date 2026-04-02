@@ -104,7 +104,7 @@ app.use(errorHandler);
 
 const io = initSocket(httpServer);
 
-export { httpServer };
+export { app, httpServer };
 
 export function startServer(): void {
   validateEnv();

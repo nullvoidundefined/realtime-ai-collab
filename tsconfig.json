@@ -16,7 +16,10 @@
     "packages/**/*.ts",
     "packages/**/*.tsx",
     "packages/**/*.js",
-    "packages/**/*.jsx"
+    "packages/**/*.jsx",
+    "scripts/**/*.ts",
+    "playwright.config.ts",
+    "e2e/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "build"]
 }
