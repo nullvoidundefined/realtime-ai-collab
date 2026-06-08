@@ -1,4 +1,3 @@
 packages:
   - packages/*
 ignoredBuiltDependencies:
-  - '@bottomlessmargaritas/formatting-configs'

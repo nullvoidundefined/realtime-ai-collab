@@ -8,5 +8,4 @@ dist/
 
 # Claude Code local settings
 .claude/*
-!.claude/bottomlessmargaritas/
 .vercel

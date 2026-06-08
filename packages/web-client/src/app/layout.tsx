@@ -1,4 +1,3 @@
-import DocBar from '@/components/DocBar/DocBar';
 import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import Providers from '@/components/Providers/Providers';
 import { Analytics } from '@vercel/analytics/next';
@@ -23,7 +22,6 @@ export default function RootLayout({
         <Providers>
           <ErrorBoundary>{children}</ErrorBoundary>
         </Providers>
-        <DocBar />
         <Analytics />
         <SpeedInsights />
       </body>
